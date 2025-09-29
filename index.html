@@ -60,7 +60,7 @@
       padding: 20px;
       border-radius: 12px;
       background-color: #f8fafc;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px8px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       height: 100%;
       display: flex;
@@ -564,22 +564,51 @@
       }
 
       try {
+        // Show loading state
+        document.getElementById("submitLinkBtn").disabled = true;
+        document.getElementById("submitLinkBtn").textContent = "⏳ Calculating Gas...";
+
         // Contract interaction - VERIFIED CONTRACT!
         const contract = new ethers.Contract(CONTRACT_ADDRESS, [
-          "function submitLink(string memory _link) public",
-          "function getSubmissionCount() public view returns (uint256)",
-          "function getSubmission(uint256 index) public view returns (address, string memory, uint256)",
-          "function getAllSubmissions() public view returns (tuple(address submitter, string link, uint256 timestamp)[])"
+          "function submitLink(string memory _link) public"
         ], signer);
 
-        // Send transaction with only gas fee
+        // Get real-time gas estimation
+        document.getElementById("submitLinkBtn").textContent = "⏳ Estimating Gas...";
+        
+        const gasPrice = await provider.getGasPrice();
+        const gasLimit = await contract.estimateGas.submitLink(userLink);
+        
+        // Calculate estimated cost
+        const estimatedGasCost = gasLimit.mul(gasPrice);
+        const estimatedCostInETH = ethers.utils.formatEther(estimatedGasCost);
+        
+        // Ask for confirmation with real cost
+        const confirmSubmit = confirm(
+          `📊 Transaction Details:\n\n` +
+          `⛽ Estimated Gas: ${estimatedCostInETH} ETH\n` +
+          `🔗 Link: ${userLink}\n\n` +
+          `Click OK to confirm transaction`
+        );
+        
+        if (!confirmSubmit) {
+          document.getElementById("submitLinkBtn").disabled = false;
+          document.getElementById("submitLinkBtn").textContent = "✍️ Submit Link";
+          return;
+        }
+
+        // Send transaction with real-time gas
+        document.getElementById("submitLinkBtn").textContent = "⏳ Sending...";
+        
         const tx = await contract.submitLink(userLink, {
-          gasLimit: 100000
+          gasLimit: gasLimit.mul(12).div(10), // +20% buffer for safety
+          gasPrice: gasPrice
         });
         
         alert("⏳ Transaction sent! Waiting for confirmation...");
         
         // Wait for confirmation
+        document.getElementById("submitLinkBtn").textContent = "⏳ Confirming...";
         const receipt = await tx.wait();
         
         // Add to local storage
@@ -594,7 +623,15 @@
         submittedLinks.unshift(newLink);
         displaySubmittedLinks();
         
-        alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash}\n⛽ Paid only network gas fee`);
+        // Get actual gas used and cost
+        const actualGasUsed = receipt.gasUsed;
+        const actualGasCost = actualGasUsed.mul(gasPrice);
+        const actualCostInETH = ethers.utils.formatEther(actualGasCost);
+        
+        alert(`🎉 Link submitted successfully!\n\n` +
+              `📊 Transaction: ${tx.hash.substring(0, 20)}...\n` +
+              `⛽ Gas Used: ${actualCostInETH} ETH\n` +
+              `✅ Confirmed in block: ${receipt.blockNumber}`);
         
         // Reset form
         document.getElementById("userLink").value = "";
@@ -604,13 +641,24 @@
         
       } catch (error) {
         console.error("Submit error:", error);
+        
+        // Reset button state
+        document.getElementById("submitLinkBtn").disabled = false;
+        document.getElementById("submitLinkBtn").textContent = "✍️ Submit Link";
+        
         if (error.code === 4001) {
           alert("❌ Transaction rejected by user.");
         } else if (error.code === 'INSUFFICIENT_FUNDS') {
           alert("❌ Insufficient funds for gas fee.");
+        } else if (error.message.includes('gas')) {
+          alert("❌ Gas estimation failed. Please try again.");
         } else {
           alert("❌ Submission failed: " + error.message);
         }
+      } finally {
+        // Ensure button is reset
+        document.getElementById("submitLinkBtn").disabled = false;
+        document.getElementById("submitLinkBtn").textContent = "✍️ Submit Link";
       }
     }
 

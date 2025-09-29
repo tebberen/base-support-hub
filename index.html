@@ -181,15 +181,6 @@
             word-break: break-all;
         }
         
-        .gas-info {
-            background-color: #1a2e2a;
-            padding: 10px;
-            border-radius: 8px;
-            margin: 10px 0;
-            font-size: 0.9rem;
-            border-left: 4px solid #2cb67d;
-        }
-        
         footer {
             text-align: center;
             margin-top: 40px;
@@ -222,9 +213,6 @@
     <section class="connected">
         <h2>Connected: <span id="walletAddress">Not Connected</span></h2>
         <button id="connectWallet">Connect Wallet</button>
-        <div id="gasEstimate" class="gas-info" style="display: none;">
-            <strong>Gas Estimate:</strong> <span id="gasInfo">Calculating...</span>
-        </div>
     </section>
     
     <section class="ecosystem">
@@ -289,8 +277,6 @@
         const walletAddress = document.getElementById('walletAddress');
         const linkInput = document.getElementById('link');
         const messageContainer = document.getElementById('messageContainer');
-        const gasEstimate = document.getElementById('gasEstimate');
-        const gasInfo = document.getElementById('gasInfo');
 
         // Wallet connection
         connectWalletBtn.addEventListener('click', connectWallet);
@@ -312,33 +298,12 @@
                     // Initialize contract
                     contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
                     
-                    // Show gas estimate
-                    gasEstimate.style.display = 'block';
-                    estimateGas();
-                    
                     showMessage('Wallet connected successfully!', 'success');
                 } catch (error) {
                     showMessage('Error connecting wallet: ' + error.message, 'error');
                 }
             } else {
                 showMessage('Please install MetaMask!', 'error');
-            }
-        }
-
-        async function estimateGas() {
-            if (!contract) return;
-            
-            try {
-                // Gas estimate al - gerçek zamanlı gas price kullan
-                const gasLimit = await contract.estimateGas.submitLink("https://example.com");
-                const gasPrice = await provider.getGasPrice();
-                const gasCost = gasLimit.mul(gasPrice);
-                const gasCostETH = ethers.utils.formatEther(gasCost);
-                
-                gasInfo.textContent = `~${parseFloat(gasCostETH).toFixed(6)} ETH (current network gas price)`;
-                    
-            } catch (error) {
-                gasInfo.textContent = 'Unable to estimate gas';
             }
         }
 
@@ -358,16 +323,12 @@
             submitButton.textContent = 'Submitting...';
 
             try {
-                // Gas price otomatik olarak güncel network değerini alacak
                 const transaction = await contract.submitLink(link);
                 showMessage('Transaction submitted! Waiting for confirmation...', 'success');
                 
                 const receipt = await transaction.wait();
                 showMessage('Link submitted successfully!', 'success');
                 linkInput.value = '';
-                
-                // Gas estimate'ı güncelle
-                estimateGas();
                 
             } catch (error) {
                 showMessage('Submission failed: ' + error.message, 'error');

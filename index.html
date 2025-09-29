@@ -409,8 +409,8 @@
     // Submitted links with metadata
     let submittedLinks = [];
 
-    // Contract configuration - YENİ KONTART ADRESİ
-    const CONTRACT_ADDRESS = "0x2af23fbfe0f767e0ff042647efa468dd112ec620";
+    // ✅ YENİ KONTART ADRESİ - VERIFY EDİLMİŞ!
+    const CONTRACT_ADDRESS = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
 
     // Utility functions
     function getPlatformName(url) {
@@ -564,7 +564,7 @@
       }
 
       try {
-        // Contract interaction - NO FEE, just gas
+        // Contract interaction - VERIFIED CONTRACT!
         const contract = new ethers.Contract(CONTRACT_ADDRESS, [
           "function submitLink(string memory _link) public",
           "function getSubmissionCount() public view returns (uint256)",
@@ -580,7 +580,7 @@
         alert("⏳ Transaction sent! Waiting for confirmation...");
         
         // Wait for confirmation
-        await tx.wait();
+        const receipt = await tx.wait();
         
         // Add to local storage
         const newLink = {

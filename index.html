@@ -3,115 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple DApp</title>
+    <title>Cela - Prosperity Protocol</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
-        .success { color: green; }
-        .error { color: red; }
-        .gas-info { background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0f0e17;
+            color: #fffffe;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #fffffe;
+            letter-spacing: 1px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            color: #7f5af0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1e1e2e;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            color: #2cb67d;
+            margin: 25px 0 15px 0;
+        }
+        
+        .connected {
+            background-color: #16161a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #7f5af0;
+        }
+        
+        .ecosystem {
+            margin-bottom: 30px;
+        }
+        
+        .ecosystem-list {
+            list-style-type: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .ecosystem-list li {
+            background-color: #16161a;
+            padding: 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid #242629;
+        }
+        
+        .ecosystem-list li:hover {
+            transform: translateY(-3px);
+            border-color: #7f5af0;
+            box-shadow: 0 5px 15px rgba(127, 90, 240, 0.2);
+        }
+        
+        .no-links {
+            background-color: #16161a;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+            border: 1px dashed #242629;
+        }
+        
+        .submit-section {
+            background-color: #16161a;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            border: 1px solid #242629;
+        }
+        
+        .submit-section h3 {
+            color: #2cb67d;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a1b2;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: #242629;
+            border: 1px solid #36383d;
+            border-radius: 8px;
+            color: #fffffe;
+            font-size: 1rem;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #7f5af0;
+        }
+        
+        button {
+            background-color: #7f5af0;
+            color: #fffffe;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #6c4bd1;
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            background-color: #36383d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background-color: #33262e;
+            color: #e53170;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #e53170;
+        }
+        
+        .success-message {
+            background-color: #1c2e2a;
+            color: #2cb67d;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #2cb67d;
+        }
+        
+        .transaction-info {
+            background-color: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #1e1e2e;
+            color: #94a1b2;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .ecosystem-list {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>Simple DApp</h1>
+    <header>
+        <h1>Cela - Prosperity Protocol</h1>
+    </header>
     
-    <button id="connectButton">Connect Wallet</button>
-    <button id="mintButton" disabled>Mint Token</button>
+    <section class="connected">
+        <h2>Connected: <span id="walletAddress">Not Connected</span></h2>
+        <button id="connectWallet">Connect Wallet</button>
+    </section>
     
-    <div id="gasEstimate" class="gas-info" style="display: none;">
-        <strong>Gas Estimate:</strong> <span id="gasInfo">Calculating...</span>
-    </div>
+    <section class="ecosystem">
+        <h2>Base Ecosystem</h2>
+        <ul class="ecosystem-list">
+            <li>Base Official</li>
+            <li>Base Documentation</li>
+            <li>Base Bridge</li>
+            <li>Base Explorer</li>
+            <li>Base Tether</li>
+            <li>Base Fascatter</li>
+            <li>Base Github</li>
+            <li>Base Mirror</li>
+            <li>Collected Layer2</li>
+        </ul>
+    </section>
     
-    <div id="status"></div>
+    <section class="no-links">
+        <p>No links submitted yet. Be the first</p>
+    </section>
+    
+    <section class="submit-section">
+        <h3>Submit Your Link</h3>
+        <p>Thank you for supporting! Now you can submit your own link.</p>
+        
+        <div id="messageContainer"></div>
+        
+        <div class="form-group">
+            <label for="link">Add Your Content</label>
+            <input type="text" id="link" placeholder="Pass your X, Fascatter, Github, or any other link here...">
+        </div>
+        
+        <button id="submitButton">Submit Link</button>
+        
+        <div class="transaction-info">
+            <p>You'll only pay the normal network gas fee (no extra cost)</p>
+            <p>Secure transaction on Base network</p>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Cela - Prosperity Protocol &copy; 2023</p>
+    </footer>
 
     <script>
+        // Kontrat adresi ve ABI
+        const CONTRACT_ADDRESS = "0x9ffef34dcd834d73251418b6e464714581a974a2";
+        const CONTRACT_ABI = [
+            "function submitLink(string memory _link) public",
+            "function getLinks() public view returns (string[] memory)",
+            "event LinkSubmitted(address indexed submitter, string link)"
+        ];
+
         let provider;
         let signer;
         let contract;
+        let connected = false;
 
-        // Contract address - DEĞİŞTİRME
-        const contractAddress = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
-        
-        // BASİT ABI - Sadece ihtiyacımız olan fonksiyonlar
-        const contractABI = [
-            "function mint(uint256 amount) public",
-            "function balanceOf(address account) public view returns (uint256)"
-        ];
+        // DOM Elements
+        const connectWalletBtn = document.getElementById('connectWallet');
+        const submitButton = document.getElementById('submitButton');
+        const walletAddress = document.getElementById('walletAddress');
+        const linkInput = document.getElementById('link');
+        const messageContainer = document.getElementById('messageContainer');
 
-        document.getElementById('connectButton').onclick = connectWallet;
-        document.getElementById('mintButton').onclick = mintToken;
+        // Wallet connection
+        connectWalletBtn.addEventListener('click', connectWallet);
+        submitButton.addEventListener('click', submitLink);
 
         async function connectWallet() {
             if (typeof window.ethereum !== 'undefined') {
                 try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' });
                     provider = new ethers.providers.Web3Provider(window.ethereum);
-                    await provider.send("eth_requestAccounts", []);
                     signer = provider.getSigner();
-                    contract = new ethers.Contract(contractAddress, contractABI, signer);
-                    
                     const address = await signer.getAddress();
-                    document.getElementById('status').innerHTML = `<p class="success">Connected: ${address.substring(0, 6)}...${address.substring(38)}</p>`;
-                    document.getElementById('mintButton').disabled = false;
-                    document.getElementById('gasEstimate').style.display = 'block';
                     
-                    // Gas estimate hesapla
-                    estimateGas();
+                    walletAddress.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+                    connectWalletBtn.textContent = 'Connected';
+                    connectWalletBtn.disabled = true;
+                    connected = true;
                     
+                    // Initialize contract
+                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+                    
+                    showMessage('Wallet connected successfully!', 'success');
                 } catch (error) {
-                    document.getElementById('status').innerHTML = `<p class="error">Connection failed: ${error.message}</p>`;
+                    showMessage('Error connecting wallet: ' + error.message, 'error');
                 }
             } else {
-                document.getElementById('status').innerHTML = '<p class="error">Please install MetaMask!</p>';
+                showMessage('Please install MetaMask!', 'error');
             }
         }
 
-        async function estimateGas() {
-            if (!contract) return;
-            
-            try {
-                // Gas estimate al
-                const gasLimit = await contract.estimateGas.mint(1);
-                const gasPrice = await provider.getGasPrice();
-                const gasCost = gasLimit.mul(gasPrice);
-                const gasCostETH = ethers.utils.formatEther(gasCost);
-                
-                document.getElementById('gasInfo').textContent = 
-                    `~${parseFloat(gasCostETH).toFixed(6)} ETH (current network gas price)`;
-                    
-            } catch (error) {
-                document.getElementById('gasInfo').textContent = 'Unable to estimate gas';
-            }
-        }
-
-        async function mintToken() {
-            if (!contract) {
-                alert("Please connect wallet first");
+        async function submitLink() {
+            if (!connected) {
+                showMessage('Please connect your wallet first!', 'error');
                 return;
             }
 
-            try {
-                document.getElementById('status').innerHTML = '<p>Minting tokens...</p>';
-                document.getElementById('mintButton').disabled = true;
+            const link = linkInput.value.trim();
+            if (!link) {
+                showMessage('Please enter a valid link!', 'error');
+                return;
+            }
 
-                // Mint işlemi - 1 token mint et
-                // Gas price otomatik olarak güncel network değerini alacak
-                const tx = await contract.mint(1);
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            try {
+                const transaction = await contract.submitLink(link);
+                showMessage('Transaction submitted! Waiting for confirmation...', 'success');
                 
-                document.getElementById('status').innerHTML = '<p>Transaction sent, waiting for confirmation...</p>';
-                
-                await tx.wait();
-                
-                document.getElementById('status').innerHTML = '<p class="success">Tokens minted successfully!</p>';
-                document.getElementById('mintButton').disabled = false;
-                
-                // Gas estimate'ı güncelle
-                estimateGas();
+                const receipt = await transaction.wait();
+                showMessage('Link submitted successfully!', 'success');
+                linkInput.value = '';
                 
             } catch (error) {
-                document.getElementById('status').innerHTML = `<p class="error">Minting failed: ${error.message}</p>`;
-                document.getElementById('mintButton').disabled = false;
+                showMessage('Submission failed: ' + error.message, 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Link';
             }
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            
+            messageContainer.innerHTML = '';
+            messageContainer.appendChild(messageDiv);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
         }
     </script>
 </body>

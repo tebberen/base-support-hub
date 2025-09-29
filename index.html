@@ -3,612 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Token DApp</title>
+    <title>Simple DApp</title>
     <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-        
-        .content {
-            padding: 30px;
-        }
-        
-        .wallet-section, .contract-section, .action-section {
-            margin-bottom: 30px;
-            padding: 25px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            background: #f8f9fa;
-        }
-        
-        .section-title {
-            font-size: 1.4em;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #4facfe;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section-title i {
-            font-size: 1.2em;
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        
-        .btn-success {
-            background: linear-gradient(135deg, #42e695 0%, #3bb2b8 100%);
-            color: white;
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .info-item {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border-left: 4px solid #4facfe;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .info-label {
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        
-        .info-value {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #333;
-            word-break: break-all;
-        }
-        
-        .gas-info {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            margin-top: 15px;
-        }
-        
-        .status {
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-        
-        .status-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .status-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        
-        .status-info {
-            background: #cce7ff;
-            color: #004085;
-            border: 1px solid #b3d7ff;
-        }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .transaction-details {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .gas-estimate {
-            background: #e7f3ff;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 15px;
-            border: 1px solid #b3d7ff;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                margin: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .content {
-                padding: 20px;
-            }
-            
-            .button-group {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        .gas-info { background: #f0f8ff; padding: 10px; border-radius: 5px; margin: 10px 0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🚀 Advanced Token DApp</h1>
-            <p>Interact with your smart contract on Base Network</p>
-        </div>
-        
-        <div class="content">
-            <!-- Wallet Connection Section -->
-            <div class="wallet-section">
-                <div class="section-title">
-                    <span>👛</span> Wallet Connection
-                </div>
-                <div class="button-group">
-                    <button id="connectButton" class="btn-primary">
-                        <span>🔗</span> Connect Wallet
-                    </button>
-                    <button id="disconnectButton" class="btn-secondary" disabled>
-                        <span>🚫</span> Disconnect
-                    </button>
-                </div>
-                <div id="walletInfo" class="info-grid" style="display: none;">
-                    <div class="info-item">
-                        <div class="info-label">Connected Address</div>
-                        <div id="walletAddress" class="info-value"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Network</div>
-                        <div id="networkInfo" class="info-value"></div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Balance</div>
-                        <div id="walletBalance" class="info-value"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Contract Information Section -->
-            <div class="contract-section">
-                <div class="section-title">
-                    <span>📄</span> Contract Information
-                </div>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div class="info-label">Contract Address</div>
-                        <div id="contractAddress" class="info-value">0x3efda406e6a89664a0ffca628e7fcd80b274f9ac</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Network</div>
-                        <div class="info-value">Base Mainnet</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Your Token Balance</div>
-                        <div id="tokenBalance" class="info-value">-</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Actions Section -->
-            <div class="action-section">
-                <div class="section-title">
-                    <span>⚡</span> Contract Actions
-                </div>
-                
-                <!-- Gas Estimate -->
-                <div id="gasEstimate" class="gas-estimate" style="display: none;">
-                    <div style="font-weight: 600; margin-bottom: 10px;">💰 Gas Estimate:</div>
-                    <div id="gasInfo" class="info-value">Calculating...</div>
-                    <div style="font-size: 0.9em; color: #666; margin-top: 5px;">
-                        Gas fee will be calculated automatically based on current network conditions
-                    </div>
-                </div>
-                
-                <div class="button-group">
-                    <button id="mintButton" class="btn-success" disabled>
-                        <span>🎨</span> Mint Tokens
-                    </button>
-                    <button id="refreshButton" class="btn-secondary">
-                        <span>🔄</span> Refresh Balance
-                    </button>
-                    <button id="viewContractButton" class="btn-primary">
-                        <span>👀</span> View on BaseScan
-                    </button>
-                </div>
-                
-                <!-- Transaction Settings -->
-                <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px;">
-                    <div style="font-weight: 600; margin-bottom: 10px;">Mint Settings:</div>
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                        <label>
-                            Amount to Mint:
-                            <input type="number" id="mintAmount" value="1" min="1" max="1000" 
-                                   style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; width: 100px;">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Status Messages -->
-            <div id="status"></div>
-            
-            <!-- Transaction Details -->
-            <div id="transactionDetails" class="transaction-details" style="display: none;">
-                <div style="font-weight: 600; margin-bottom: 10px;">Transaction Details:</div>
-                <div id="txHash" class="info-value" style="word-break: break-all;"></div>
-            </div>
-        </div>
+    <h1>Simple DApp</h1>
+    
+    <button id="connectButton">Connect Wallet</button>
+    <button id="mintButton" disabled>Mint Token</button>
+    
+    <div id="gasEstimate" class="gas-info" style="display: none;">
+        <strong>Gas Estimate:</strong> <span id="gasInfo">Calculating...</span>
     </div>
+    
+    <div id="status"></div>
 
     <script>
-        // Global variables
         let provider;
         let signer;
         let contract;
-        let userAddress;
 
-        // Contract configuration
+        // Contract address - DEĞİŞTİRME
         const contractAddress = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
+        
+        // BASİT ABI - Sadece ihtiyacımız olan fonksiyonlar
         const contractABI = [
             "function mint(uint256 amount) public",
-            "function balanceOf(address account) public view returns (uint256)",
-            "function name() public view returns (string)",
-            "function symbol() public view returns (string)",
-            "function totalSupply() public view returns (uint256)",
-            "event Transfer(address indexed from, address indexed to, uint256 value)"
+            "function balanceOf(address account) public view returns (uint256)"
         ];
 
-        // DOM Elements
-        const connectButton = document.getElementById('connectButton');
-        const disconnectButton = document.getElementById('disconnectButton');
-        const mintButton = document.getElementById('mintButton');
-        const refreshButton = document.getElementById('refreshButton');
-        const viewContractButton = document.getElementById('viewContractButton');
-        const walletInfo = document.getElementById('walletInfo');
-        const statusDiv = document.getElementById('status');
-        const transactionDetails = document.getElementById('transactionDetails');
-        const gasEstimate = document.getElementById('gasEstimate');
-        const gasInfo = document.getElementById('gasInfo');
-        const mintAmountInput = document.getElementById('mintAmount');
-
-        // Event Listeners
-        connectButton.addEventListener('click', connectWallet);
-        disconnectButton.addEventListener('click', disconnectWallet);
-        mintButton.addEventListener('click', mintTokens);
-        refreshButton.addEventListener('click', refreshData);
-        viewContractButton.addEventListener('click', viewOnBaseScan);
-        mintAmountInput.addEventListener('input', estimateGas);
-
-        // Check if MetaMask is installed
-        window.addEventListener('load', async () => {
-            if (typeof window.ethereum === 'undefined') {
-                showStatus('Please install MetaMask to use this DApp!', 'error');
-                disableAllButtons();
-            } else {
-                // Check if already connected
-                try {
-                    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-                    if (accounts.length > 0) {
-                        await connectWallet();
-                    }
-                } catch (error) {
-                    console.log('No existing connection found');
-                }
-            }
-        });
-
-        // Handle account changes
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', (accounts) => {
-                if (accounts.length === 0) {
-                    disconnectWallet();
-                } else {
-                    connectWallet();
-                }
-            });
-
-            window.ethereum.on('chainChanged', (chainId) => {
-                window.location.reload();
-            });
-        }
+        document.getElementById('connectButton').onclick = connectWallet;
+        document.getElementById('mintButton').onclick = mintToken;
 
         async function connectWallet() {
-            try {
-                showStatus('Connecting to wallet...', 'info');
-                
-                provider = new ethers.providers.Web3Provider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                signer = provider.getSigner();
-                userAddress = await signer.getAddress();
-                contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-                // Update UI
-                await updateWalletInfo();
-                walletInfo.style.display = 'grid';
-                connectButton.disabled = true;
-                disconnectButton.disabled = false;
-                mintButton.disabled = false;
-                gasEstimate.style.display = 'block';
-                
-                showStatus('Wallet connected successfully!', 'success');
-                
-                // Load additional data
-                await refreshData();
-                await estimateGas();
-                
-            } catch (error) {
-                showStatus(`Connection failed: ${error.message}`, 'error');
-                console.error('Connection error:', error);
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    provider = new ethers.providers.Web3Provider(window.ethereum);
+                    await provider.send("eth_requestAccounts", []);
+                    signer = provider.getSigner();
+                    contract = new ethers.Contract(contractAddress, contractABI, signer);
+                    
+                    const address = await signer.getAddress();
+                    document.getElementById('status').innerHTML = `<p class="success">Connected: ${address.substring(0, 6)}...${address.substring(38)}</p>`;
+                    document.getElementById('mintButton').disabled = false;
+                    document.getElementById('gasEstimate').style.display = 'block';
+                    
+                    // Gas estimate hesapla
+                    estimateGas();
+                    
+                } catch (error) {
+                    document.getElementById('status').innerHTML = `<p class="error">Connection failed: ${error.message}</p>`;
+                }
+            } else {
+                document.getElementById('status').innerHTML = '<p class="error">Please install MetaMask!</p>';
             }
-        }
-
-        async function disconnectWallet() {
-            walletInfo.style.display = 'none';
-            gasEstimate.style.display = 'none';
-            connectButton.disabled = false;
-            disconnectButton.disabled = true;
-            mintButton.disabled = true;
-            showStatus('Wallet disconnected', 'info');
-            
-            // Reset values
-            document.getElementById('tokenBalance').textContent = '-';
-            transactionDetails.style.display = 'none';
         }
 
         async function estimateGas() {
-            if (!contract || !userAddress) return;
-
+            if (!contract) return;
+            
             try {
-                const amount = mintAmountInput.value || '1';
-                
-                // Estimate gas for mint transaction
-                const gasLimit = await contract.estimateGas.mint(amount);
-                
-                // Get current gas price from network
+                // Gas estimate al
+                const gasLimit = await contract.estimateGas.mint(1);
                 const gasPrice = await provider.getGasPrice();
-                
-                // Calculate total gas cost in ETH
                 const gasCost = gasLimit.mul(gasPrice);
                 const gasCostETH = ethers.utils.formatEther(gasCost);
                 
-                // Format gas price for display
-                const gasPriceGwei = ethers.utils.formatUnits(gasPrice, 'gwei');
-                
-                gasInfo.innerHTML = `
-                    <div>Estimated Gas: ~${ethers.utils.formatUnits(gasLimit, 'gwei').split('.')[0]} Gwei</div>
-                    <div>Gas Price: ${parseFloat(gasPriceGwei).toFixed(2)} Gwei</div>
-                    <div>Total Cost: <strong>${parseFloat(gasCostETH).toFixed(6)} ETH</strong></div>
-                    <div style="font-size: 0.8em; color: #666;">
-                        (≈ $${(parseFloat(gasCostETH) * 3000).toFixed(2)} USD - estimated)
-                    </div>
-                `;
-                
+                document.getElementById('gasInfo').textContent = 
+                    `~${parseFloat(gasCostETH).toFixed(6)} ETH (current network gas price)`;
+                    
             } catch (error) {
-                gasInfo.innerHTML = 'Unable to estimate gas. Transaction might fail.';
-                console.error('Gas estimation error:', error);
+                document.getElementById('gasInfo').textContent = 'Unable to estimate gas';
             }
         }
 
-        async function mintTokens() {
+        async function mintToken() {
             if (!contract) {
-                showStatus('Please connect wallet first', 'error');
+                alert("Please connect wallet first");
                 return;
             }
 
             try {
-                const amount = mintAmountInput.value || '1';
-                mintButton.innerHTML = '<div class="loading"></div> Minting...';
-                mintButton.disabled = true;
+                document.getElementById('status').innerHTML = '<p>Minting tokens...</p>';
+                document.getElementById('mintButton').disabled = true;
 
-                showStatus('Sending mint transaction...', 'info');
-
-                // Let MetaMask handle gas estimation automatically
-                const tx = await contract.mint(amount);
+                // Mint işlemi - 1 token mint et
+                // Gas price otomatik olarak güncel network değerini alacak
+                const tx = await contract.mint(1);
                 
-                showStatus('Transaction sent! Waiting for confirmation...', 'info');
+                document.getElementById('status').innerHTML = '<p>Transaction sent, waiting for confirmation...</p>';
                 
-                // Show transaction hash
-                transactionDetails.style.display = 'block';
-                document.getElementById('txHash').textContent = `Transaction Hash: ${tx.hash}`;
+                await tx.wait();
                 
-                const receipt = await tx.wait();
+                document.getElementById('status').innerHTML = '<p class="success">Tokens minted successfully!</p>';
+                document.getElementById('mintButton').disabled = false;
                 
-                // Show actual gas used
-                const actualGas = receipt.gasUsed;
-                const gasPrice = receipt.effectiveGasPrice;
-                const totalCost = actualGas.mul(gasPrice);
-                
-                showStatus(
-                    `Success! ${amount} tokens minted! Gas used: ${ethers.utils.formatEther(totalCost).substring(0, 8)} ETH`, 
-                    'success'
-                );
-                
-                // Refresh balances
-                await refreshData();
-                await estimateGas();
+                // Gas estimate'ı güncelle
+                estimateGas();
                 
             } catch (error) {
-                if (error.code === 'INSUFFICIENT_FUNDS') {
-                    showStatus('Insufficient funds for gas fee', 'error');
-                } else if (error.code === 'ACTION_REJECTED') {
-                    showStatus('Transaction rejected by user', 'error');
-                } else {
-                    showStatus(`Minting failed: ${error.message}`, 'error');
-                }
-                console.error('Minting error:', error);
-            } finally {
-                mintButton.innerHTML = '<span>🎨</span> Mint Tokens';
-                mintButton.disabled = false;
+                document.getElementById('status').innerHTML = `<p class="error">Minting failed: ${error.message}</p>`;
+                document.getElementById('mintButton').disabled = false;
             }
-        }
-
-        async function refreshData() {
-            if (!contract || !userAddress) return;
-
-            try {
-                refreshButton.innerHTML = '<div class="loading"></div> Refreshing...';
-                
-                // Get token balance
-                const balance = await contract.balanceOf(userAddress);
-                document.getElementById('tokenBalance').textContent = ethers.utils.formatUnits(balance, 0);
-                
-                // Get wallet balance
-                const walletBalance = await provider.getBalance(userAddress);
-                document.getElementById('walletBalance').textContent = 
-                    ethers.utils.formatEther(walletBalance).substring(0, 6) + ' ETH';
-                
-                refreshButton.innerHTML = '<span>🔄</span> Refresh Balance';
-                
-            } catch (error) {
-                console.error('Error refreshing data:', error);
-                refreshButton.innerHTML = '<span>🔄</span> Refresh Balance';
-            }
-        }
-
-        async function updateWalletInfo() {
-            if (!provider || !userAddress) return;
-
-            try {
-                // Update wallet address
-                document.getElementById('walletAddress').textContent = 
-                    `${userAddress.substring(0, 6)}...${userAddress.substring(38)}`;
-                
-                // Update network info
-                const network = await provider.getNetwork();
-                document.getElementById('networkInfo').textContent = network.name.charAt(0).toUpperCase() + network.name.slice(1);
-                
-                // Update wallet balance
-                const balance = await provider.getBalance(userAddress);
-                document.getElementById('walletBalance').textContent = 
-                    ethers.utils.formatEther(balance).substring(0, 6) + ' ETH';
-                
-            } catch (error) {
-                console.error('Error updating wallet info:', error);
-            }
-        }
-
-        function viewOnBaseScan() {
-            window.open(`https://basescan.org/address/${contractAddress}`, '_blank');
-        }
-
-        function showStatus(message, type) {
-            statusDiv.innerHTML = `<div class="status status-${type}">${message}</div>`;
-            
-            // Auto-hide success messages after 5 seconds
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusDiv.innerHTML = '';
-                }, 5000);
-            }
-        }
-
-        function disableAllButtons() {
-            connectButton.disabled = true;
-            mintButton.disabled = true;
-            refreshButton.disabled = true;
         }
     </script>
 </body>

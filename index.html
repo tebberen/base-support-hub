@@ -1,218 +1,672 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cela - Prosperity Protocol</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #0f0e17;
-            color: #fffffe;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            border-bottom: 1px solid #1e1e2e;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #fffffe;
-            letter-spacing: 1px;
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            color: #7f5af0;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #1e1e2e;
-        }
-        
-        h3 {
-            font-size: 1.3rem;
-            color: #2cb67d;
-            margin: 25px 0 15px 0;
-        }
-        
-        .connected {
-            background-color: #16161a;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #7f5af0;
-        }
-        
-        .ecosystem {
-            margin-bottom: 30px;
-        }
-        
-        .ecosystem-list {
-            list-style-type: none;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-        
-        .ecosystem-list li {
-            background-color: #16161a;
-            padding: 15px;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            border: 1px solid #242629;
-        }
-        
-        .ecosystem-list li:hover {
-            transform: translateY(-3px);
-            border-color: #7f5af0;
-            box-shadow: 0 5px 15px rgba(127, 90, 240, 0.2);
-        }
-        
-        .no-links {
-            background-color: #16161a;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 30px 0;
-            border: 1px dashed #242629;
-        }
-        
-        .submit-section {
-            background-color: #16161a;
-            padding: 30px;
-            border-radius: 10px;
-            margin: 30px 0;
-            border: 1px solid #242629;
-        }
-        
-        .submit-section h3 {
-            color: #2cb67d;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #94a1b2;
-        }
-        
-        input[type="text"] {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: #242629;
-            border: 1px solid #36383d;
-            border-radius: 8px;
-            color: #fffffe;
-            font-size: 1rem;
-        }
-        
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #7f5af0;
-        }
-        
-        button {
-            background-color: #7f5af0;
-            color: #fffffe;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: #6c4bd1;
-            transform: translateY(-2px);
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #1e1e2e;
-            color: #94a1b2;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .ecosystem-list {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base Engage Hub</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #ffffff;
+      font-family: Arial, sans-serif;
+      color: #1d4ed8;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      display: flex;
+      max-width: 1400px;
+      width: 100%;
+      gap: 30px;
+      align-items: flex-start;
+    }
+    .sidebar {
+      width: 300px;
+      flex-shrink: 0;
+    }
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      background: #1d4ed8;
+      color: white;
+      padding: 25px;
+      font-size: 28px;
+      font-weight: bold;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+      width: 100%;
+      max-width: 1400px;
+    }
+    .subheader {
+      margin: 15px 0 30px 0;
+      font-size: 18px;
+      color: #1d4ed8;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+    .link-card {
+      border: 2px solid #1d4ed8;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: #f8fafc;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .link-card.featured {
+      border-color: #f59e0b;
+      background-color: #fffbeb;
+    }
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 20px auto;
+      width: 100%;
+    }
+    button {
+      background: #1d4ed8;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #1e40af;
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: 2px solid #1d4ed8;
+      width: 90%;
+      max-width: 500px;
+      margin: 15px 0;
+      font-size: 16px;
+    }
+    .wallet-info {
+      margin: 0 0 20px 0;
+      padding: 15px;
+      background-color: #dbeafe;
+      border-radius: 10px;
+      font-weight: bold;
+      border: 2px solid #1d4ed8;
+      text-align: center;
+      width: 100%;
+    }
+    .connect-btn {
+      background: #10b981;
+      margin: 15px 0;
+      padding: 15px 25px;
+      font-size: 18px;
+    }
+    .support-link {
+      color: #1d4ed8;
+      text-decoration: none;
+      word-break: break-all;
+      display: block;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    .link-platform {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+      font-weight: bold;
+      background: #e0f2fe;
+      padding: 5px 10px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .step-indicator {
+      margin: 0 0 20px 0;
+      font-weight: bold;
+      color: #1d4ed8;
+      font-size: 20px;
+      text-align: center;
+      width: 100%;
+    }
+    .step-container {
+      background: #f8fafc;
+      border: 2px solid #1d4ed8;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      height: fit-content;
+      width: 100%;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .step-number {
+      background: #1d4ed8;
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+    }
+    .success-message {
+      background: #d1fae5;
+      border: 2px solid #10b981;
+      padding: 15px;
+      margin: 15px auto;
+      border-radius: 8px;
+      color: #065f46;
+      font-weight: bold;
+      max-width: 600px;
+      text-align: center;
+      width: 100%;
+    }
+    .link-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      font-size: 14px;
+      color: #666;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .stat-value {
+      font-weight: bold;
+      font-size: 18px;
+      color: #1d4ed8;
+    }
+    .submit-form {
+      background: #f8fafc;
+      border: 2px solid #1d4ed8;
+      padding: 30px;
+      margin: 20px auto;
+      border-radius: 12px;
+      max-width: 600px;
+      text-align: center;
+      width: 100%;
+    }
+    .gas-info {
+      background: #e0f2fe;
+      padding: 10px;
+      border-radius: 8px;
+      margin: 10px 0;
+      font-size: 14px;
+      color: #1d4ed8;
+      text-align: center;
+    }
+    .base-ecosystem {
+      background: #1d4ed8;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      height: fit-content;
+    }
+    .base-ecosystem h3 {
+      margin: 0 0 15px 0;
+      font-size: 20px;
+      text-align: center;
+    }
+    .base-link {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      text-decoration: none;
+      color: white;
+      transition: all 0.3s ease;
+    }
+    .base-link:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateX(5px);
+    }
+    .base-link-icon {
+      margin-right: 10px;
+      font-size: 18px;
+    }
+    .wallet-address {
+      background: #dbeafe;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      border: 2px solid #1d4ed8;
+      text-align: center;
+      width: 100%;
+    }
+    .main-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      width: 100%;
+      align-items: center;
+    }
+    .centered-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+  </style>
 </head>
 <body>
+  <div class="centered-content">
     <header>
-        <h1>Cela - Prosperity Protocol</h1>
+      <div>Base Engage Hub</div>
     </header>
     
-    <section class="connected">
-        <h2>Connected: 0x04E_0045</h2>
-    </section>
-    
-    <section class="ecosystem">
-        <h2>Base Ecosystem</h2>
-        <ul class="ecosystem-list">
-            <li>Base Official</li>
-            <li>Base Documentation</li>
-            <li>Base Bridge</li>
-            <li>Base Explorer</li>
-            <li>Base Tether</li>
-            <li>Base Fascatter</li>
-            <li>Base Github</li>
-            <li>Base Mirror</li>
-            <li>Collected Layer2</li>
-        </ul>
-    </section>
-    
-    <section class="no-links">
-        <p>No links submitted yet. Be the first</p>
-    </section>
-    
-    <section class="submit-section">
-        <h3>Submit Your Link</h3>
-        <p>Thank you for supporting! Now you can submit your own link.</p>
-        
-        <div class="form-group">
-            <label for="link">Add Your Content</label>
-            <input type="text" id="link" placeholder="Pass your X, Fascatter, Github, or any other link here...">
+    <div class="subheader">If you want support, support first</div>
+
+    <!-- Connect butonu header'ın altında -->
+    <button id="connectWalletBtn" class="connect-btn">🔗 Connect MetaMask</button>
+  </div>
+
+  <div class="container">
+    <!-- Left Sidebar - Base Ecosystem Links -->
+    <div class="sidebar">
+      <!-- Wallet Address -->
+      <div id="walletInfo" class="wallet-address hidden">
+        ✅ Connected: <span id="walletAddress"></span>
+      </div>
+
+      <div class="base-ecosystem">
+        <h3>🌐 Base Ecosystem</h3>
+        <a href="https://base.org" target="_blank" class="base-link">
+          <span class="base-link-icon">🏠</span>Base Official
+        </a>
+        <a href="https://docs.base.org" target="_blank" class="base-link">
+          <span class="base-link-icon">📚</span>Base Documentation
+        </a>
+        <a href="https://bridge.base.org" target="_blank" class="base-link">
+          <span class="base-link-icon">🌉</span>Base Bridge
+        </a>
+        <a href="https://explorer.base.org" target="_blank" class="base-link">
+          <span class="base-link-icon">🔍</span>Base Explorer
+        </a>
+        <a href="https://x.com/base" target="_blank" class="base-link">
+          <span class="base-link-icon">🐦</span>Base Twitter
+        </a>
+        <a href="https://warpcast.com/~/channel/base" target="_blank" class="base-link">
+          <span class="base-link-icon">🔮</span>Base Farcaster
+        </a>
+        <a href="https://github.com/base-org" target="_blank" class="base-link">
+          <span class="base-link-icon">💻</span>Base GitHub
+        </a>
+        <a href="https://base.mirror.xyz" target="_blank" class="base-link">
+          <span class="base-link-icon">📝</span>Base Mirror
+        </a>
+        <a href="https://www.coinbase.com/layer2" target="_blank" class="base-link">
+          <span class="base-link-icon">💰</span>Coinbase Layer2
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="main-sections">
+        <!-- Step 1: Support Required -->
+        <div id="step1" class="centered-content">
+          <div class="step-indicator">
+            <span class="step-number">1</span> Support Community Members
+          </div>
+          <div class="step-container">
+            <h3>📋 Support Others First</h3>
+            <p>To submit your link, you must first support at least one community member</p>
+            
+            <div class="links-grid" id="linksContainer">
+              <!-- Links will be loaded here dynamically -->
+            </div>
+          </div>
         </div>
-        
-        <button>Submit Link</button>
-    </section>
+
+        <!-- Community Links Section -->
+        <div class="centered-content">
+          <div class="step-indicator">
+            🌟 Community Links (Newest First)
+          </div>
+          <div class="links-grid" id="submittedLinks">
+            <!-- Submitted links will appear here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: Submit Your Link -->
+  <div id="step2" class="hidden centered-content">
+    <div class="step-indicator">
+      <span class="step-number">2</span> Submit Your Link
+    </div>
     
-    <footer>
-        <p>Cela - Prosperity Protocol &copy; 2023</p>
-    </footer>
+    <div class="success-message">
+      ✅ Thank you for supporting! Now you can submit your own link
+    </div>
+    
+    <div class="submit-form">
+      <h3>🎉 Add Your Content</h3>
+      <input type="text" placeholder="Paste your X, Farcaster, GitHub, or any other link here..." id="userLink" />
+      <br>
+      <div class="gas-info">
+        ⛽ You'll only pay the normal network gas fee (no extra cost)
+      </div>
+      <button id="submitLinkBtn">✍️ Submit Link</button>
+      <p><small>🔒 Secure transaction on Base network</small></p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script>
+    // State management
+    let provider = null;
+    let signer = null;
+    let isConnected = false;
+    let userAddress = '';
+    let hasSupported = false;
+
+    // Your 9 initial links
+    const initialSupportLinks = [
+      "https://farcaster.xyz/teberen/0x391c5713",
+      "https://farcaster.xyz/ertu",
+      "https://farcaster.xyz/ratmubaba",
+      "https://x.com/erturulsezar13?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://x.com/egldmvx?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://tebberen.github.io/celo-engage-hub/",
+      "https://x.com/meelioodas?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://x.com/luckyfromnecef/status/1972371920290259437?s=46&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://github.com/tebberen"
+    ];
+
+    // Submitted links with metadata
+    let submittedLinks = [];
+
+    // ✅ YENİ KONTART ADRESİ - VERIFY EDİLMİŞ!
+    const CONTRACT_ADDRESS = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
+
+    // Utility functions
+    function getPlatformName(url) {
+      if (url.includes('x.com') || url.includes('twitter.com')) return '🐦 X';
+      if (url.includes('farcaster.xyz') || url.includes('warpcast.com')) return '🔮 Farcaster';
+      if (url.includes('github.com')) return '💻 GitHub';
+      if (url.includes('youtube.com')) return '📺 YouTube';
+      if (url.includes('discord.com')) return '💬 Discord';
+      return '🌐 Website';
+    }
+
+    function displaySupportLinks() {
+      const container = document.getElementById('linksContainer');
+      container.innerHTML = '';
+      
+      initialSupportLinks.forEach((link, index) => {
+        const platform = getPlatformName(link);
+        const linkCard = document.createElement('div');
+        linkCard.innerHTML = `
+          <div class="link-card">
+            <div>
+              <div class="link-platform">${platform}</div>
+              <a href="${link}" target="_blank" class="support-link" onclick="markAsSupported()">
+                ${link}
+              </a>
+            </div>
+            <button class="supportBtn" onclick="markAsSupported()">👍 Support This Content</button>
+          </div>
+        `;
+        container.appendChild(linkCard);
+      });
+    }
+
+    function displaySubmittedLinks() {
+      const container = document.getElementById('submittedLinks');
+      container.innerHTML = '';
+      
+      if (submittedLinks.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1;">
+            <div class="link-card">
+              <p>No links submitted yet. Be the first! 🚀</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Sort by timestamp (newest first) and filter out links with 5+ supports
+      const sortedLinks = submittedLinks
+        .filter(link => link.supportCount < 5)
+        .sort((a, b) => b.timestamp - a.timestamp);
+      
+      sortedLinks.forEach((linkData, index) => {
+        const platform = getPlatformName(linkData.link);
+        const submitDate = new Date(linkData.timestamp).toLocaleDateString();
+        const isFeatured = linkData.supportCount >= 3;
+        
+        const linkCard = document.createElement('div');
+        linkCard.innerHTML = `
+          <div class="link-card ${isFeatured ? 'featured' : ''}">
+            <div>
+              <div class="link-platform">${platform}</div>
+              <a href="${linkData.link}" target="_blank" class="support-link">
+                ${linkData.link}
+              </a>
+            </div>
+            <div class="link-stats">
+              <div class="stat-item">
+                <div>Supports</div>
+                <div class="stat-value">${linkData.supportCount}/5</div>
+              </div>
+              <div class="stat-item">
+                <div>Submitted</div>
+                <div class="stat-value">${submitDate}</div>
+              </div>
+              <div class="stat-item">
+                <div>By</div>
+                <div class="stat-value">${linkData.submitter.substring(0, 6)}...</div>
+              </div>
+            </div>
+            ${isFeatured ? '<div style="color: #f59e0b; margin-top: 10px; text-align: center;">⭐ Featured Content</div>' : ''}
+          </div>
+        `;
+        container.appendChild(linkCard);
+      });
+    }
+
+    function checkMetaMask() {
+      if (typeof window.ethereum === 'undefined') {
+        alert("❌ MetaMask not detected. Please install MetaMask first.");
+        return false;
+      }
+      return true;
+    }
+
+    async function connectWallet() {
+      if (!checkMetaMask()) return false;
+
+      try {
+        provider = new ethers.providers.Web3Provider(window.ethereum);
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        signer = provider.getSigner();
+        userAddress = await signer.getAddress();
+        
+        document.getElementById('walletAddress').textContent = 
+          `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
+        document.getElementById('walletInfo').classList.remove('hidden');
+        document.getElementById('connectWalletBtn').style.display = 'none';
+        
+        isConnected = true;
+        return true;
+        
+      } catch (error) {
+        console.error("Connection error:", error);
+        if (error.code === 4001) {
+          alert("❌ Connection rejected. Please connect to continue.");
+        } else {
+          alert("❌ Connection failed: " + error.message);
+        }
+        return false;
+      }
+    }
+
+    function markAsSupported() {
+      hasSupported = true;
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
+    }
+
+    async function submitLink() {
+      if (!isConnected) {
+        const connected = await connectWallet();
+        if (!connected) return;
+      }
+
+      if (!hasSupported) {
+        alert("❌ Please support at least one community member first!");
+        return;
+      }
+
+      const userLink = document.getElementById("userLink").value.trim();
+      if (!userLink) {
+        alert("❌ Please enter your link first.");
+        return;
+      }
+
+      if (!userLink.startsWith('http://') && !userLink.startsWith('https://')) {
+        alert("❌ Please enter a valid URL starting with http:// or https://");
+        return;
+      }
+
+      try {
+        // Contract interaction - VERIFIED CONTRACT!
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, [
+          "function submitLink(string memory _link) public",
+          "function getSubmissionCount() public view returns (uint256)",
+          "function getSubmission(uint256 index) public view returns (address, string memory, uint256)",
+          "function getAllSubmissions() public view returns (tuple(address submitter, string link, uint256 timestamp)[])"
+        ], signer);
+
+        // Send transaction with only gas fee
+        const tx = await contract.submitLink(userLink, {
+          gasLimit: 100000
+        });
+        
+        alert("⏳ Transaction sent! Waiting for confirmation...");
+        
+        // Wait for confirmation
+        const receipt = await tx.wait();
+        
+        // Add to local storage
+        const newLink = {
+          link: userLink,
+          timestamp: Date.now(),
+          supportCount: 0,
+          submitter: userAddress,
+          txHash: tx.hash
+        };
+        
+        submittedLinks.unshift(newLink);
+        displaySubmittedLinks();
+        
+        alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash}\n⛽ Paid only network gas fee`);
+        
+        // Reset form
+        document.getElementById("userLink").value = "";
+        hasSupported = false;
+        document.getElementById('step2').classList.add('hidden');
+        document.getElementById('step1').classList.remove('hidden');
+        
+      } catch (error) {
+        console.error("Submit error:", error);
+        if (error.code === 4001) {
+          alert("❌ Transaction rejected by user.");
+        } else if (error.code === 'INSUFFICIENT_FUNDS') {
+          alert("❌ Insufficient funds for gas fee.");
+        } else {
+          alert("❌ Submission failed: " + error.message);
+        }
+      }
+    }
+
+    // Simulate support clicks
+    function simulateSupportClicks() {
+      setInterval(() => {
+        if (submittedLinks.length > 0) {
+          const randomIndex = Math.floor(Math.random() * submittedLinks.length);
+          if (submittedLinks[randomIndex].supportCount < 5) {
+            submittedLinks[randomIndex].supportCount++;
+            console.log(`Support added to: ${submittedLinks[randomIndex].link}`);
+            displaySubmittedLinks();
+          }
+        }
+      }, 30000);
+    }
+
+    // Event listeners
+    document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
+    document.getElementById("submitLinkBtn").addEventListener("click", submitLink);
+
+    // Initialize application
+    window.addEventListener('load', function() {
+      displaySupportLinks();
+      displaySubmittedLinks();
+      simulateSupportClicks();
+      
+      // Check for existing wallet connection
+      if (checkMetaMask()) {
+        setTimeout(async () => {
+          try {
+            const tempProvider = new ethers.providers.Web3Provider(window.ethereum);
+            const accounts = await tempProvider.listAccounts();
+            
+            if (accounts.length > 0) {
+              provider = tempProvider;
+              signer = provider.getSigner();
+              userAddress = await signer.getAddress();
+              
+              document.getElementById('walletAddress').textContent = 
+                `${userAddress.substring(0, 6)}...${userAddress.substring(userAddress.length - 4)}`;
+              document.getElementById('walletInfo').classList.remove('hidden');
+              document.getElementById('connectWalletBtn').style.display = 'none';
+              
+              isConnected = true;
+            }
+          } catch (error) {
+            console.log("No previous connection found");
+          }
+        }, 500);
+      }
+    });
+
+    // Make functions globally available
+    window.markAsSupported = markAsSupported;
+    window.connectWallet = connectWallet;
+  </script>
 </body>
 </html>

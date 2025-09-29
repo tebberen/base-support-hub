@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cela - Prosperity Protocol</title>
-    <script src="https://cdn.ethers.io/lib/ethers-5.7.umd.min.js" type="application/javascript"></script>
     <style>
         * {
             margin: 0;
@@ -148,39 +147,6 @@
             transform: translateY(-2px);
         }
         
-        button:disabled {
-            background-color: #36383d;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .error-message {
-            background-color: #33262e;
-            color: #e53170;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #e53170;
-        }
-        
-        .success-message {
-            background-color: #1c2e2a;
-            color: #2cb67d;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #2cb67d;
-        }
-        
-        .transaction-info {
-            background-color: #1a1a2e;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 0.9rem;
-            word-break: break-all;
-        }
-        
         footer {
             text-align: center;
             margin-top: 40px;
@@ -211,8 +177,7 @@
     </header>
     
     <section class="connected">
-        <h2>Connected: <span id="walletAddress">Not Connected</span></h2>
-        <button id="connectWallet">Connect Wallet</button>
+        <h2>Connected: 0x04E_0045</h2>
     </section>
     
     <section class="ecosystem">
@@ -238,118 +203,16 @@
         <h3>Submit Your Link</h3>
         <p>Thank you for supporting! Now you can submit your own link.</p>
         
-        <div id="messageContainer"></div>
-        
         <div class="form-group">
             <label for="link">Add Your Content</label>
             <input type="text" id="link" placeholder="Pass your X, Fascatter, Github, or any other link here...">
         </div>
         
-        <button id="submitButton">Submit Link</button>
-        
-        <div class="transaction-info">
-            <p>You'll only pay the normal network gas fee (no extra cost)</p>
-            <p>Secure transaction on Base network</p>
-        </div>
+        <button>Submit Link</button>
     </section>
     
     <footer>
         <p>Cela - Prosperity Protocol &copy; 2023</p>
     </footer>
-
-    <script>
-        // Kontrat adresi ve ABI
-        const CONTRACT_ADDRESS = "0x9ffef34dcd834d73251418b6e464714581a974a2";
-        const CONTRACT_ABI = [
-            "function submitLink(string memory _link) public",
-            "function getLinks() public view returns (string[] memory)",
-            "event LinkSubmitted(address indexed submitter, string link)"
-        ];
-
-        let provider;
-        let signer;
-        let contract;
-        let connected = false;
-
-        // DOM Elements
-        const connectWalletBtn = document.getElementById('connectWallet');
-        const submitButton = document.getElementById('submitButton');
-        const walletAddress = document.getElementById('walletAddress');
-        const linkInput = document.getElementById('link');
-        const messageContainer = document.getElementById('messageContainer');
-
-        // Wallet connection
-        connectWalletBtn.addEventListener('click', connectWallet);
-        submitButton.addEventListener('click', submitLink);
-
-        async function connectWallet() {
-            if (typeof window.ethereum !== 'undefined') {
-                try {
-                    await window.ethereum.request({ method: 'eth_requestAccounts' });
-                    provider = new ethers.providers.Web3Provider(window.ethereum);
-                    signer = provider.getSigner();
-                    const address = await signer.getAddress();
-                    
-                    walletAddress.textContent = `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-                    connectWalletBtn.textContent = 'Connected';
-                    connectWalletBtn.disabled = true;
-                    connected = true;
-                    
-                    // Initialize contract
-                    contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-                    
-                    showMessage('Wallet connected successfully!', 'success');
-                } catch (error) {
-                    showMessage('Error connecting wallet: ' + error.message, 'error');
-                }
-            } else {
-                showMessage('Please install MetaMask!', 'error');
-            }
-        }
-
-        async function submitLink() {
-            if (!connected) {
-                showMessage('Please connect your wallet first!', 'error');
-                return;
-            }
-
-            const link = linkInput.value.trim();
-            if (!link) {
-                showMessage('Please enter a valid link!', 'error');
-                return;
-            }
-
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            try {
-                const transaction = await contract.submitLink(link);
-                showMessage('Transaction submitted! Waiting for confirmation...', 'success');
-                
-                const receipt = await transaction.wait();
-                showMessage('Link submitted successfully!', 'success');
-                linkInput.value = '';
-                
-            } catch (error) {
-                showMessage('Submission failed: ' + error.message, 'error');
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Link';
-            }
-        }
-
-        function showMessage(message, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
-            messageDiv.textContent = message;
-            
-            messageContainer.innerHTML = '';
-            messageContainer.appendChild(messageDiv);
-            
-            setTimeout(() => {
-                messageDiv.remove();
-            }, 5000);
-        }
-    </script>
 </body>
 </html>

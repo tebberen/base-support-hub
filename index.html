@@ -409,8 +409,8 @@
     // Submitted links with metadata
     let submittedLinks = [];
 
-    // Contract configuration - NO FEE anymore!
-    const CONTRACT_ADDRESS = "0x9c05bea4a19de45fe9c8c5541dd4ec6c500f2f3f";
+    // Contract configuration - YENİ KONTART ADRESİ
+    const CONTRACT_ADDRESS = "0x2af23fbfe0f767e0ff042647efa468dd112ec620";
 
     // Utility functions
     function getPlatformName(url) {
@@ -567,7 +567,9 @@
         // Contract interaction - NO FEE, just gas
         const contract = new ethers.Contract(CONTRACT_ADDRESS, [
           "function submitLink(string memory _link) public",
-          "function getSubmissionCount() public view returns (uint256)"
+          "function getSubmissionCount() public view returns (uint256)",
+          "function getSubmission(uint256 index) public view returns (address, string memory, uint256)",
+          "function getAllSubmissions() public view returns (tuple(address submitter, string link, uint256 timestamp)[])"
         ], signer);
 
         // Send transaction with only gas fee
@@ -592,7 +594,7 @@
         submittedLinks.unshift(newLink);
         displaySubmittedLinks();
         
-        alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash.substring(0, 20)}...\n⛽ Paid only network gas fee`);
+        alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash}\n⛽ Paid only network gas fee`);
         
         // Reset form
         document.getElementById("userLink").value = "";

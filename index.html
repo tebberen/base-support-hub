@@ -393,10 +393,21 @@
     let userAddress = '';
     let hasSupported = false;
 
-    // ✅ 9 LINK SABİT DEĞİL - KULLANICI LINKLERİYLE DOLACAK
-    let communityLinks = [];
+    // ✅ 9 BAŞLANGIÇ LİNKİ GERİ EKLENDİ
+    const initialSupportLinks = [
+      "https://farcaster.xyz/teberen/0x391c5713",
+      "https://farcaster.xyz/ertu",
+      "https://farcaster.xyz/ratmubaba",
+      "https://x.com/erturulsezar13?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://x.com/egldmvx?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://tebberen.github.io/celo-engage-hub/",
+      "https://x.com/meelioodas?s=21&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://x.com/luckyfromnecef/status/1972371920290259437?s=46&t=l2lmnRZcmeoUCu9IdzeRpA",
+      "https://github.com/tebberen"
+    ];
 
-    // Submitted links with metadata
+    // Kullanıcıların eklediği linkler
+    let communityLinks = [...initialSupportLinks];
     let submittedLinks = [];
 
     // ✅ KONTART ADRESİ
@@ -416,27 +427,16 @@
       const container = document.getElementById('linksContainer');
       container.innerHTML = '';
       
-      if (communityLinks.length === 0) {
-        container.innerHTML = `
-          <div style="grid-column: 1 / -1;">
-            <div class="link-card">
-              <p>🌟 Be the first to submit a link! Support will appear here.</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-      
-      // Show latest community links for support
-      communityLinks.slice(0, 9).forEach((linkData, index) => {
-        const platform = getPlatformName(linkData.link);
+      // ✅ İLK 9 LİNK GÖSTERİLİYOR - KULLANICI TIKLAYABİLİR
+      initialSupportLinks.forEach((link, index) => {
+        const platform = getPlatformName(link);
         const linkCard = document.createElement('div');
         linkCard.innerHTML = `
           <div class="link-card">
             <div>
               <div class="link-platform">${platform}</div>
-              <a href="${linkData.link}" target="_blank" class="support-link">
-                ${linkData.link}
+              <a href="${link}" target="_blank" class="support-link" onclick="markAsSupported()">
+                ${link}
               </a>
             </div>
             <button class="supportBtn" onclick="markAsSupported()">👍 Support This Content</button>
@@ -461,7 +461,7 @@
         return;
       }
       
-      // Show all submitted links (newest first)
+      // Kullanıcıların eklediği linkleri göster
       submittedLinks.forEach((linkData, index) => {
         const platform = getPlatformName(linkData.link);
         const submitDate = new Date(linkData.timestamp).toLocaleDateString();
@@ -571,7 +571,7 @@
           "function submitLink(string memory _link) public"
         ], signer);
 
-        // ✅ DİREKT META MASK AÇILIYOR - BİLGİLENDİRME EKRANI YOK
+        // ✅ DİREKT META MASK AÇILIYOR
         const tx = await contract.submitLink(userLink, {
           gasLimit: 150000
         });
@@ -581,7 +581,7 @@
         // Wait for confirmation
         const receipt = await tx.wait();
         
-        // ✅ YENİ LINK HEM COMMUNITY HEM SUBMITTED LİSTESİNE EKLENİYOR
+        // ✅ YENİ LINK SUBMITTED LİSTESİNE EKLENİYOR
         const newLink = {
           link: userLink,
           timestamp: Date.now(),
@@ -590,12 +590,7 @@
           txHash: tx.hash
         };
         
-        // Add to both lists
-        communityLinks.unshift(newLink);
         submittedLinks.unshift(newLink);
-        
-        // Update both displays
-        displaySupportLinks();
         displaySubmittedLinks();
         
         alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash.substring(0, 20)}...`);
@@ -627,18 +622,6 @@
       }
     }
 
-    // Simulate support clicks
-    function simulateSupportClicks() {
-      setInterval(() => {
-        if (communityLinks.length > 0) {
-          const randomIndex = Math.floor(Math.random() * communityLinks.length);
-          communityLinks[randomIndex].supportCount++;
-          console.log(`Support added to: ${communityLinks[randomIndex].link}`);
-          displaySupportLinks();
-        }
-      }, 30000);
-    }
-
     // Event listeners
     document.getElementById("connectWalletBtn").addEventListener("click", connectWallet);
     document.getElementById("submitLinkBtn").addEventListener("click", submitLink);
@@ -647,7 +630,6 @@
     window.addEventListener('load', function() {
       displaySupportLinks();
       displaySubmittedLinks();
-      simulateSupportClicks();
       
       // Check for existing wallet connection
       if (checkMetaMask()) {

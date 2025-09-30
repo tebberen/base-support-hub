@@ -71,6 +71,10 @@
       border-color: #f59e0b;
       background-color: #fffbeb;
     }
+    .link-card.completed {
+      border-color: #10b981;
+      background-color: #ecfdf5;
+    }
     .links-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -277,6 +281,14 @@
       align-items: center;
       width: 100%;
     }
+    .section-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1d4ed8;
+      margin: 30px 0 20px 0;
+      text-align: center;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
@@ -349,13 +361,11 @@
           </div>
         </div>
 
-        <!-- Community Links Section -->
-        <div class="centered-content">
-          <div class="step-indicator">
-            🌟 Recently Submitted Links
-          </div>
-          <div class="links-grid" id="submittedLinks">
-            <!-- Submitted links will appear here -->
+        <!-- Completed Links Section -->
+        <div class="centered-content" id="completedSection">
+          <div class="section-title">✅ Completed Links (5/5 Support)</div>
+          <div class="links-grid" id="completedLinks">
+            <!-- Completed links will appear here -->
           </div>
         </div>
       </div>
@@ -406,19 +416,29 @@
       "https://github.com/tebberen"
     ];
 
-    // ✅ TÜM LİNKLER BURADA - 9 BAŞLANGIÇ + KULLANICI LİNKLERİ
-    let allCommunityLinks = initialSupportLinks.map(link => ({
-      link: link,
-      clickCount: 0,
-      timestamp: Date.now(),
-      submitter: "community"
-    }));
+    // ✅ LOCALSTORAGE'DAN LİNKLERİ YÜKLE
+    function loadLinksFromStorage() {
+      const storedLinks = localStorage.getItem('baseEngageHubLinks');
+      if (storedLinks) {
+        return JSON.parse(storedLinks);
+      } else {
+        // İlk kez çalıştırılıyorsa başlangıç linklerini oluştur
+        return initialSupportLinks.map(link => ({
+          link: link,
+          clickCount: 0,
+          timestamp: Date.now(),
+          submitter: "community"
+        }));
+      }
+    }
 
-    // Kullanıcıların eklediği linkler (sadece "Recently Submitted Links" için)
-    let submittedLinks = [];
+    // ✅ LOCALSTORAGE'A LİNKLERİ KAYDET
+    function saveLinksToStorage(links) {
+      localStorage.setItem('baseEngageHubLinks', JSON.stringify(links));
+    }
 
-    // ✅ KONTART ADRESİ
-    const CONTRACT_ADDRESS = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
+    // ✅ TÜM LİNKLER BURADA - LOCALSTORAGE'DAN YÜKLENİYOR
+    let allCommunityLinks = loadLinksFromStorage();
 
     // Utility functions
     function getPlatformName(url) {
@@ -451,7 +471,7 @@
       // En az tıklanan linkleri göster (sürkülasyon için)
       activeLinks.sort((a, b) => a.clickCount - b.clickCount);
       
-      activeLinks.slice(0, 9).forEach((linkData, index) => {
+      activeLinks.forEach((linkData, index) => {
         const platform = getPlatformName(linkData.link);
         const linkCard = document.createElement('div');
         linkCard.innerHTML = `
@@ -475,29 +495,31 @@
       });
     }
 
-    function displaySubmittedLinks() {
-      const container = document.getElementById('submittedLinks');
+    function displayCompletedLinks() {
+      const container = document.getElementById('completedLinks');
       container.innerHTML = '';
       
-      if (submittedLinks.length === 0) {
+      // ✅ 5 TIK OLAN LİNKLERİ GÖSTER
+      const completedLinks = allCommunityLinks.filter(linkData => linkData.clickCount >= 5);
+      
+      if (completedLinks.length === 0) {
         container.innerHTML = `
           <div style="grid-column: 1 / -1;">
             <div class="link-card">
-              <p>No links submitted yet. Be the first! 🚀</p>
+              <p>No completed links yet. Start supporting! 🚀</p>
             </div>
           </div>
         `;
         return;
       }
       
-      // Son eklenen 6 linki göster
-      submittedLinks.slice(0, 6).forEach((linkData, index) => {
+      completedLinks.forEach((linkData, index) => {
         const platform = getPlatformName(linkData.link);
         const submitDate = new Date(linkData.timestamp).toLocaleDateString();
         
         const linkCard = document.createElement('div');
         linkCard.innerHTML = `
-          <div class="link-card">
+          <div class="link-card completed">
             <div>
               <div class="link-platform">${platform}</div>
               <a href="${linkData.link}" target="_blank" class="support-link">
@@ -506,12 +528,12 @@
             </div>
             <div class="link-stats">
               <div class="stat-item">
-                <div>Submitted</div>
-                <div class="stat-value">${submitDate}</div>
+                <div>Status</div>
+                <div class="stat-value">✅ Completed</div>
               </div>
               <div class="stat-item">
-                <div>By</div>
-                <div class="stat-value">${linkData.submitter.substring(0, 6)}...</div>
+                <div>Submitted</div>
+                <div class="stat-value">${submitDate}</div>
               </div>
             </div>
           </div>
@@ -520,19 +542,19 @@
       });
     }
 
-    // ✅ LİNK TIKLANDIĞINDA SAYACı ARTIR
+    // ✅ LİNK TIKLANDIĞINDA SAYACI ARTIR VE KAYDET
     function handleLinkClick(linkUrl) {
       const linkData = allCommunityLinks.find(item => item.link === linkUrl);
       if (linkData && linkData.clickCount < 5) {
         linkData.clickCount++;
         console.log(`Link clicked: ${linkUrl} - Count: ${linkData.clickCount}`);
         
-        // 5 tık olunca listeden kaldır
-        if (linkData.clickCount >= 5) {
-          console.log(`Link ${linkUrl} reached maximum clicks`);
-        }
+        // LocalStorage'a kaydet
+        saveLinksToStorage(allCommunityLinks);
         
+        // Görünümleri güncelle
         displaySupportLinks();
+        displayCompletedLinks();
       }
     }
 
@@ -620,7 +642,7 @@
         // ✅ SADECE META MASK BEKLENİYOR - ALERT YOK
         const receipt = await tx.wait();
         
-        // ✅ YENİ LINK HEM COMMUNITY HEM SUBMITTED LİSTESİNE EKLENİYOR
+        // ✅ YENİ LINK HEM COMMUNITY LİSTESİNE EKLENİYOR
         const newLinkData = {
           link: userLink,
           clickCount: 0,
@@ -628,13 +650,15 @@
           submitter: userAddress
         };
         
-        // Hem tıklanabilir listeye hem de submitted listesine ekle
+        // Tıklanabilir listeye ekle
         allCommunityLinks.unshift(newLinkData);
-        submittedLinks.unshift(newLinkData);
         
-        // Her iki listeyi de güncelle
+        // LocalStorage'a kaydet
+        saveLinksToStorage(allCommunityLinks);
+        
+        // Görünümleri güncelle
         displaySupportLinks();
-        displaySubmittedLinks();
+        displayCompletedLinks();
         
         // ✅ BAŞARI MESAJI YOK - SADECE FORM SIFIRLANIYOR
         document.getElementById("userLink").value = "";
@@ -671,7 +695,7 @@
     // Initialize application
     window.addEventListener('load', function() {
       displaySupportLinks();
-      displaySubmittedLinks();
+      displayCompletedLinks();
       
       // Check for existing wallet connection
       if (checkMetaMask()) {

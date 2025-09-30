@@ -67,10 +67,6 @@
       flex-direction: column;
       justify-content: space-between;
     }
-    .link-card.featured {
-      border-color: #f59e0b;
-      background-color: #fffbeb;
-    }
     .link-card.completed {
       border-color: #10b981;
       background-color: #ecfdf5;
@@ -299,14 +295,11 @@
     
     <div class="subheader">If you want support, support first</div>
 
-    <!-- Connect butonu header'ın altında -->
     <button id="connectWalletBtn" class="connect-btn">🔗 Connect MetaMask</button>
   </div>
 
   <div class="container">
-    <!-- Left Sidebar - Base Ecosystem Links -->
     <div class="sidebar">
-      <!-- Wallet Address -->
       <div id="walletInfo" class="wallet-address hidden">
         ✅ Connected: <span id="walletAddress"></span>
       </div>
@@ -343,10 +336,8 @@
       </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
       <div class="main-sections">
-        <!-- Step 1: Support Required -->
         <div id="step1" class="centered-content">
           <div class="step-indicator">
             <span class="step-number">1</span> Support Community Members
@@ -356,23 +347,19 @@
             <p>To submit your link, you must first support at least one community member</p>
             
             <div class="links-grid" id="linksContainer">
-              <!-- Links will be loaded here dynamically -->
             </div>
           </div>
         </div>
 
-        <!-- Completed Links Section -->
         <div class="centered-content" id="completedSection">
           <div class="section-title">✅ Completed Links (5/5 Support)</div>
           <div class="links-grid" id="completedLinks">
-            <!-- Completed links will appear here -->
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Step 2: Submit Your Link -->
   <div id="step2" class="hidden centered-content">
     <div class="step-indicator">
       <span class="step-number">2</span> Submit Your Link
@@ -403,7 +390,10 @@
     let userAddress = '';
     let hasSupported = false;
 
-    // ✅ 9 BAŞLANGIÇ LİNKİ
+    // Contract address
+    const CONTRACT_ADDRESS = "0x3efda406e6a89664a0ffca628e7fcd80b274f9ac";
+
+    // Initial support links
     const initialSupportLinks = [
       "https://farcaster.xyz/teberen/0x391c5713",
       "https://farcaster.xyz/ertu",
@@ -416,13 +406,13 @@
       "https://github.com/tebberen"
     ];
 
-    // ✅ LOCALSTORAGE'DAN LİNKLERİ YÜKLE
+    // Load links from localStorage
     function loadLinksFromStorage() {
       const storedLinks = localStorage.getItem('baseEngageHubLinks');
       if (storedLinks) {
         return JSON.parse(storedLinks);
       } else {
-        // İlk kez çalıştırılıyorsa başlangıç linklerini oluştur
+        // Create initial links if first time
         return initialSupportLinks.map(link => ({
           link: link,
           clickCount: 0,
@@ -432,12 +422,12 @@
       }
     }
 
-    // ✅ LOCALSTORAGE'A LİNKLERİ KAYDET
+    // Save links to localStorage
     function saveLinksToStorage(links) {
       localStorage.setItem('baseEngageHubLinks', JSON.stringify(links));
     }
 
-    // ✅ TÜM LİNKLER BURADA - LOCALSTORAGE'DAN YÜKLENİYOR
+    // All community links loaded from localStorage
     let allCommunityLinks = loadLinksFromStorage();
 
     // Utility functions
@@ -454,7 +444,7 @@
       const container = document.getElementById('linksContainer');
       container.innerHTML = '';
       
-      // ✅ SADECE 5 TIK ALTINDAKİ LİNKLERİ GÖSTER
+      // Show only links with less than 5 clicks
       const activeLinks = allCommunityLinks.filter(linkData => linkData.clickCount < 5);
       
       if (activeLinks.length === 0) {
@@ -468,7 +458,7 @@
         return;
       }
       
-      // En az tıklanan linkleri göster (sürkülasyon için)
+      // Show least clicked links first
       activeLinks.sort((a, b) => a.clickCount - b.clickCount);
       
       activeLinks.forEach((linkData, index) => {
@@ -499,7 +489,7 @@
       const container = document.getElementById('completedLinks');
       container.innerHTML = '';
       
-      // ✅ 5 TIK OLAN LİNKLERİ GÖSTER
+      // Show links with 5 clicks
       const completedLinks = allCommunityLinks.filter(linkData => linkData.clickCount >= 5);
       
       if (completedLinks.length === 0) {
@@ -542,25 +532,25 @@
       });
     }
 
-    // ✅ LİNK TIKLANDIĞINDA SAYACI ARTIR VE KAYDET
+    // Increase click counter when link is clicked
     function handleLinkClick(linkUrl) {
       const linkData = allCommunityLinks.find(item => item.link === linkUrl);
       if (linkData && linkData.clickCount < 5) {
         linkData.clickCount++;
         console.log(`Link clicked: ${linkUrl} - Count: ${linkData.clickCount}`);
         
-        // LocalStorage'a kaydet
+        // Save to localStorage
         saveLinksToStorage(allCommunityLinks);
         
-        // Görünümleri güncelle
+        // Update displays
         displaySupportLinks();
         displayCompletedLinks();
       }
     }
 
-    // ✅ SUPPORT BUTONUNA TIKLANDIĞINDA
+    // When support button is clicked
     function markAsSupported(linkUrl) {
-      handleLinkClick(linkUrl); // Tık sayacını artır
+      handleLinkClick(linkUrl); // Increase click counter
       hasSupported = true;
       document.getElementById('step1').classList.add('hidden');
       document.getElementById('step2').classList.remove('hidden');
@@ -634,15 +624,13 @@
           "function submitLink(string memory _link) public"
         ], signer);
 
-        // ✅ DİREKT META MASK AÇILIYOR - HİÇBİR BİLGİLENDİRME YOK
         const tx = await contract.submitLink(userLink, {
           gasLimit: 150000
         });
         
-        // ✅ SADECE META MASK BEKLENİYOR - ALERT YOK
         const receipt = await tx.wait();
         
-        // ✅ YENİ LINK HEM COMMUNITY LİSTESİNE EKLENİYOR
+        // Add new link to community list
         const newLinkData = {
           link: userLink,
           clickCount: 0,
@@ -650,17 +638,16 @@
           submitter: userAddress
         };
         
-        // Tıklanabilir listeye ekle
         allCommunityLinks.unshift(newLinkData);
         
-        // LocalStorage'a kaydet
+        // Save to localStorage
         saveLinksToStorage(allCommunityLinks);
         
-        // Görünümleri güncelle
+        // Update displays
         displaySupportLinks();
         displayCompletedLinks();
         
-        // ✅ BAŞARI MESAJI YOK - SADECE FORM SIFIRLANIYOR
+        // Reset form
         document.getElementById("userLink").value = "";
         hasSupported = false;
         document.getElementById('step2').classList.add('hidden');
@@ -674,7 +661,6 @@
         document.getElementById("submitLinkBtn").textContent = "✍️ Submit Link";
         
         if (error.code === 4001) {
-          // ✅ META MASK REDDETTİ - SESSİZCE DEVAM ET
           console.log("Transaction rejected by user");
         } else if (error.code === 'INSUFFICIENT_FUNDS') {
           alert("❌ Insufficient funds for gas fee.");

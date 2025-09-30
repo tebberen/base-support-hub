@@ -352,7 +352,7 @@
         <!-- Community Links Section -->
         <div class="centered-content">
           <div class="step-indicator">
-            🌟 Community Links (Newest First)
+            🌟 Recently Submitted Links
           </div>
           <div class="links-grid" id="submittedLinks">
             <!-- Submitted links will appear here -->
@@ -393,7 +393,7 @@
     let userAddress = '';
     let hasSupported = false;
 
-    // ✅ 9 BAŞLANGIÇ LİNKİ GERİ EKLENDİ
+    // ✅ 9 BAŞLANGIÇ LİNKİ
     const initialSupportLinks = [
       "https://farcaster.xyz/teberen/0x391c5713",
       "https://farcaster.xyz/ertu",
@@ -406,8 +406,15 @@
       "https://github.com/tebberen"
     ];
 
-    // Kullanıcıların eklediği linkler
-    let communityLinks = [...initialSupportLinks];
+    // ✅ TÜM LİNKLER BURADA - 9 BAŞLANGIÇ + KULLANICI LİNKLERİ
+    let allCommunityLinks = initialSupportLinks.map(link => ({
+      link: link,
+      clickCount: 0,
+      timestamp: Date.now(),
+      submitter: "community"
+    }));
+
+    // Kullanıcıların eklediği linkler (sadece "Recently Submitted Links" için)
     let submittedLinks = [];
 
     // ✅ KONTART ADRESİ
@@ -427,19 +434,41 @@
       const container = document.getElementById('linksContainer');
       container.innerHTML = '';
       
-      // ✅ İLK 9 LİNK GÖSTERİLİYOR - KULLANICI TIKLAYABİLİR
-      initialSupportLinks.forEach((link, index) => {
-        const platform = getPlatformName(link);
+      // ✅ SADECE 5 TIK ALTINDAKİ LİNKLERİ GÖSTER
+      const activeLinks = allCommunityLinks.filter(linkData => linkData.clickCount < 5);
+      
+      if (activeLinks.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1 / -1;">
+            <div class="link-card">
+              <p>🌟 All links have reached maximum support! Submit new links to continue.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      // En az tıklanan linkleri göster (sürkülasyon için)
+      activeLinks.sort((a, b) => a.clickCount - b.clickCount);
+      
+      activeLinks.slice(0, 9).forEach((linkData, index) => {
+        const platform = getPlatformName(linkData.link);
         const linkCard = document.createElement('div');
         linkCard.innerHTML = `
           <div class="link-card">
             <div>
               <div class="link-platform">${platform}</div>
-              <a href="${link}" target="_blank" class="support-link" onclick="markAsSupported()">
-                ${link}
+              <a href="${linkData.link}" target="_blank" class="support-link" onclick="handleLinkClick('${linkData.link}')">
+                ${linkData.link}
               </a>
             </div>
-            <button class="supportBtn" onclick="markAsSupported()">👍 Support This Content</button>
+            <div class="link-stats">
+              <div class="stat-item">
+                <div>Supports</div>
+                <div class="stat-value">${linkData.clickCount}/5</div>
+              </div>
+            </div>
+            <button class="supportBtn" onclick="markAsSupported('${linkData.link}')">👍 Support This Content</button>
           </div>
         `;
         container.appendChild(linkCard);
@@ -461,15 +490,14 @@
         return;
       }
       
-      // Kullanıcıların eklediği linkleri göster
-      submittedLinks.forEach((linkData, index) => {
+      // Son eklenen 6 linki göster
+      submittedLinks.slice(0, 6).forEach((linkData, index) => {
         const platform = getPlatformName(linkData.link);
         const submitDate = new Date(linkData.timestamp).toLocaleDateString();
-        const isFeatured = linkData.supportCount >= 3;
         
         const linkCard = document.createElement('div');
         linkCard.innerHTML = `
-          <div class="link-card ${isFeatured ? 'featured' : ''}">
+          <div class="link-card">
             <div>
               <div class="link-platform">${platform}</div>
               <a href="${linkData.link}" target="_blank" class="support-link">
@@ -477,10 +505,6 @@
               </a>
             </div>
             <div class="link-stats">
-              <div class="stat-item">
-                <div>Supports</div>
-                <div class="stat-value">${linkData.supportCount}</div>
-              </div>
               <div class="stat-item">
                 <div>Submitted</div>
                 <div class="stat-value">${submitDate}</div>
@@ -490,11 +514,34 @@
                 <div class="stat-value">${linkData.submitter.substring(0, 6)}...</div>
               </div>
             </div>
-            ${isFeatured ? '<div style="color: #f59e0b; margin-top: 10px; text-align: center;">⭐ Featured Content</div>' : ''}
           </div>
         `;
         container.appendChild(linkCard);
       });
+    }
+
+    // ✅ LİNK TIKLANDIĞINDA SAYACı ARTIR
+    function handleLinkClick(linkUrl) {
+      const linkData = allCommunityLinks.find(item => item.link === linkUrl);
+      if (linkData && linkData.clickCount < 5) {
+        linkData.clickCount++;
+        console.log(`Link clicked: ${linkUrl} - Count: ${linkData.clickCount}`);
+        
+        // 5 tık olunca listeden kaldır
+        if (linkData.clickCount >= 5) {
+          console.log(`Link ${linkUrl} reached maximum clicks`);
+        }
+        
+        displaySupportLinks();
+      }
+    }
+
+    // ✅ SUPPORT BUTONUNA TIKLANDIĞINDA
+    function markAsSupported(linkUrl) {
+      handleLinkClick(linkUrl); // Tık sayacını artır
+      hasSupported = true;
+      document.getElementById('step1').classList.add('hidden');
+      document.getElementById('step2').classList.remove('hidden');
     }
 
     function checkMetaMask() {
@@ -533,12 +580,6 @@
       }
     }
 
-    function markAsSupported() {
-      hasSupported = true;
-      document.getElementById('step1').classList.add('hidden');
-      document.getElementById('step2').classList.remove('hidden');
-    }
-
     async function submitLink() {
       if (!isConnected) {
         const connected = await connectWallet();
@@ -571,31 +612,31 @@
           "function submitLink(string memory _link) public"
         ], signer);
 
-        // ✅ DİREKT META MASK AÇILIYOR
+        // ✅ DİREKT META MASK AÇILIYOR - HİÇBİR BİLGİLENDİRME YOK
         const tx = await contract.submitLink(userLink, {
           gasLimit: 150000
         });
         
-        alert("⏳ Transaction sent! Waiting for confirmation...");
-        
-        // Wait for confirmation
+        // ✅ SADECE META MASK BEKLENİYOR - ALERT YOK
         const receipt = await tx.wait();
         
-        // ✅ YENİ LINK SUBMITTED LİSTESİNE EKLENİYOR
-        const newLink = {
+        // ✅ YENİ LINK HEM COMMUNITY HEM SUBMITTED LİSTESİNE EKLENİYOR
+        const newLinkData = {
           link: userLink,
+          clickCount: 0,
           timestamp: Date.now(),
-          supportCount: 0,
-          submitter: userAddress,
-          txHash: tx.hash
+          submitter: userAddress
         };
         
-        submittedLinks.unshift(newLink);
+        // Hem tıklanabilir listeye hem de submitted listesine ekle
+        allCommunityLinks.unshift(newLinkData);
+        submittedLinks.unshift(newLinkData);
+        
+        // Her iki listeyi de güncelle
+        displaySupportLinks();
         displaySubmittedLinks();
         
-        alert(`🎉 Link submitted successfully!\n\n📊 Transaction: ${tx.hash.substring(0, 20)}...`);
-        
-        // Reset form
+        // ✅ BAŞARI MESAJI YOK - SADECE FORM SIFIRLANIYOR
         document.getElementById("userLink").value = "";
         hasSupported = false;
         document.getElementById('step2').classList.add('hidden');
@@ -609,7 +650,8 @@
         document.getElementById("submitLinkBtn").textContent = "✍️ Submit Link";
         
         if (error.code === 4001) {
-          alert("❌ Transaction rejected by user.");
+          // ✅ META MASK REDDETTİ - SESSİZCE DEVAM ET
+          console.log("Transaction rejected by user");
         } else if (error.code === 'INSUFFICIENT_FUNDS') {
           alert("❌ Insufficient funds for gas fee.");
         } else {
@@ -660,6 +702,7 @@
     // Make functions globally available
     window.markAsSupported = markAsSupported;
     window.connectWallet = connectWallet;
+    window.handleLinkClick = handleLinkClick;
   </script>
 </body>
 </html>
